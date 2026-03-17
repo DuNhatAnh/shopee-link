@@ -1,4 +1,4 @@
-import { collection, getDocs, addDoc, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, addDoc, deleteDoc, doc, query } from "firebase/firestore";
 import { db } from "../firebase";
 
 const COLLECTION_NAME = "products";
@@ -29,18 +29,19 @@ const MOCK_DATA = [
 
 export const getProducts = async () => {
   try {
-    console.log("Fetching products from COLLECTION_NAME:", COLLECTION_NAME);
+    console.log("Fetching products...");
     const q = query(collection(db, COLLECTION_NAME));
     
-    // Add a race with a timeout
     const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error("Firebase Timeout")), 5000)
+      setTimeout(() => reject(new Error("Firebase Timeout")), 4000)
     );
     
     const querySnapshot = await Promise.race([getDocs(q), timeoutPromise]);
     
-    console.log("Fetched products count:", querySnapshot.docs.length);
-    if (querySnapshot.docs.length === 0) return [];
+    if (querySnapshot.docs.length === 0) {
+      console.log("No products found in Firestore, using mock fallback.");
+      return MOCK_DATA;
+    }
     
     return querySnapshot.docs.map(doc => ({
       id: doc.id,
@@ -52,15 +53,22 @@ export const getProducts = async () => {
   }
 };
 
-export const addMockProducts = async () => {
-  console.log("Starting to add mock products...");
+export const addProduct = async (product) => {
   try {
-    for (const product of MOCK_DATA) {
-      const { id, ...productData } = product; // Remove ID for Firestore
-      const docRef = await addDoc(collection(db, COLLECTION_NAME), productData);
-      console.log("Added doc with ID:", docRef.id);
-    }
+    const docRef = await addDoc(collection(db, COLLECTION_NAME), product);
+    return { id: docRef.id, ...product };
   } catch (error) {
-    console.error("Failed to add mock products:", error);
+    console.error("Error adding product:", error);
+    throw error;
+  }
+};
+
+export const deleteProduct = async (id) => {
+  try {
+    await deleteDoc(doc(db, COLLECTION_NAME, id));
+    return true;
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    throw error;
   }
 };

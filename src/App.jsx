@@ -1,34 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { getProducts, addMockProducts } from './services/productService';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { getProducts } from './services/productService';
 import ProductCard from './components/ProductCard';
+import AdminDashboard from './components/AdminDashboard';
 
-function App() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        let data = await getProducts();
-        
-        // If no products, add mock data (for first time setup)
-        if (data.length === 0) {
-          console.log("Adding mock products...");
-          await addMockProducts();
-          data = await getProducts();
-        }
-        
-        setProducts(data);
-      } catch (error) {
-        console.error("Error loading products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
+const MainFeed = ({ products, loading }) => {
   if (loading) {
     return (
       <div className="app-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -57,19 +33,47 @@ function App() {
   return (
     <div className="app-container">
       <div className="progress-bar" />
-      
       <div className="product-feed">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
-
       {products.length === 0 && (
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
           <p>Không có sản phẩm nào.</p>
         </div>
       )}
     </div>
+  );
+};
+
+function App() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const data = await getProducts();
+      setProducts(data);
+    } catch (error) {
+      console.error("Error loading products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainFeed products={products} loading={loading} />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+      </Routes>
+    </Router>
   );
 }
 
