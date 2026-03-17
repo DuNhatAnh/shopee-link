@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getProducts, addProduct, deleteProduct } from '../services/productService';
-import { Trash2, Plus, LogOut, Lock, Package, ExternalLink } from 'lucide-react';
+import { Trash2, Plus, LogOut, Lock, LayoutDashboard, ExternalLink, Tag } from 'lucide-react';
 
 const AdminDashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -9,12 +9,12 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: '',
+    code: '',
     price: '',
     image: '',
     link: ''
   });
 
-  // Simple password check (user can change this or use env)
   const ADMIN_PASSWORD = "123"; 
 
   useEffect(() => {
@@ -48,7 +48,7 @@ const AdminDashboard = () => {
     try {
       setLoading(true);
       await addProduct(newProduct);
-      setNewProduct({ name: '', price: '', image: '', link: '' });
+      setNewProduct({ name: '', code: '', price: '', image: '', link: '' });
       await fetchProducts();
     } catch (error) {
       alert("Lỗi khi thêm sản phẩm");
@@ -64,7 +64,7 @@ const AdminDashboard = () => {
         await deleteProduct(id);
         await fetchProducts();
       } catch (error) {
-        alert("Lỗi khi xóa sản phẩm");
+        alert("Lỗi khi xóa sản phẩm: " + error.message);
       } finally {
         setLoading(false);
       }
@@ -73,209 +73,109 @@ const AdminDashboard = () => {
 
   if (!isLoggedIn) {
     return (
-      <div className="admin-login-container">
-        <div className="glass-morphism login-card">
-          <Lock size={48} color="var(--primary)" style={{ marginBottom: '20px' }} />
-          <h2>Admin Login</h2>
+      <div className="admin-login-container" style={{ background: '#fff', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+        <div style={{ width: '100%', maxWidth: '350px', textAlign: 'center' }}>
+          <Lock size={40} color="var(--primary)" style={{ marginBottom: '20px' }} />
+          <h2 style={{ marginBottom: '10px' }}>Admin Access</h2>
+          <p style={{ color: '#666', marginBottom: '30px', fontSize: '0.9rem' }}>Vui lòng nhập mật khẩu quản trị</p>
           <form onSubmit={handleLogin}>
             <input 
               type="password" 
-              placeholder="Nhập mật khẩu..." 
+              placeholder="Mật khẩu" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="admin-input"
+              autoFocus
             />
-            <button type="submit" className="buy-button" style={{ width: '100%', marginTop: '20px' }}>
+            <button type="submit" className="buy-button" style={{ width: '100%', marginTop: '10px' }}>
               Đăng nhập
             </button>
           </form>
         </div>
-        <style jsx>{`
-          .admin-login-container {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #111;
-            padding: 20px;
-          }
-          .login-card {
-            width: 100%;
-            max-width: 350px;
-            padding: 40px 30px;
-            text-align: center;
-          }
-          .admin-input {
-            width: 100%;
-            padding: 12px 16px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            color: white;
-            font-size: 1rem;
-            outline: none;
-            margin-top: 20px;
-          }
-          .admin-input:focus {
-            border-color: var(--primary);
-          }
-        `}</style>
       </div>
     );
   }
 
   return (
-    <div className="admin-dashboard">
-      <header className="admin-header">
-        <h1>Quản lý Link Shopee</h1>
-        <button onClick={() => setIsLoggedIn(false)} className="logout-btn">
+    <div className="admin-dashboard" style={{ background: '#f8f8f8', minHeight: '100vh', padding: '20px' }}>
+      <header style={{ maxWidth: '600px', margin: '0 auto 30px auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h1 style={{ fontSize: '1.2rem', display: 'flex', alignItems: 'center' }}>
+          <LayoutDashboard size={20} style={{ marginRight: '10px' }} />
+          Quản trị Link
+        </h1>
+        <button onClick={() => setIsLoggedIn(false)} style={{ background: 'none', border: 'none', color: '#ff4d4d', cursor: 'pointer' }}>
           <LogOut size={20} />
         </button>
       </header>
 
-      <div className="admin-content">
-        <section className="glass-morphism admin-card">
-          <h3><Plus size={20} style={{ marginRight: '8px' }} /> Thêm sản phẩm mới</h3>
-          <form onSubmit={handleAddProduct} className="add-form">
+      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div style={{ background: '#fff', padding: '20px', borderRadius: '12px', boxShadow: 'var(--shadow)', marginBottom: '30px' }}>
+          <h3 style={{ marginBottom: '20px', fontSize: '1rem', display: 'flex', alignItems: 'center' }}>
+            <Plus size={18} style={{ marginRight: '8px' }} /> Thêm Link Shopee
+          </h3>
+          <form onSubmit={handleAddProduct}>
             <input 
               placeholder="Tên sản phẩm" 
               value={newProduct.name}
               onChange={e => setNewProduct({...newProduct, name: e.target.value})}
               className="admin-input"
             />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <input 
+                placeholder="Mã SP (VD: MS-01)" 
+                value={newProduct.code}
+                onChange={e => setNewProduct({...newProduct, code: e.target.value})}
+                className="admin-input"
+              />
+              <input 
+                placeholder="Giá (VD: 150.000đ)" 
+                value={newProduct.price}
+                onChange={e => setNewProduct({...newProduct, price: e.target.value})}
+                className="admin-input"
+              />
+            </div>
             <input 
-              placeholder="Giá (VD: 150.000đ)" 
-              value={newProduct.price}
-              onChange={e => setNewProduct({...newProduct, price: e.target.value})}
-              className="admin-input"
-            />
-            <input 
-              placeholder="Link ảnh (Tốt nhất là link Unsplash hoặc Shopee)" 
+              placeholder="Link hình ảnh" 
               value={newProduct.image}
               onChange={e => setNewProduct({...newProduct, image: e.target.value})}
               className="admin-input"
             />
             <input 
-              placeholder="Link Shopee (Affiliate Link)" 
+              placeholder="Link Shopee (Link rút gọn/Affiliate)" 
               value={newProduct.link}
               onChange={e => setNewProduct({...newProduct, link: e.target.value})}
               className="admin-input"
             />
-            <button type="submit" disabled={loading} className="buy-button" style={{ marginTop: '20px' }}>
-              {loading ? 'Đang lưu...' : 'Lưu sản phẩm'}
+            <button type="submit" disabled={loading} className="buy-button" style={{ width: '100%', marginTop: '10px' }}>
+              {loading ? 'Đang thực hiện...' : 'Cập nhật lên trang chủ'}
             </button>
           </form>
-        </section>
+        </div>
 
-        <section className="product-list-section">
-          <h3>Danh sách hiện có ({products.length})</h3>
-          <div className="product-grid">
+        <div>
+          <h3 style={{ marginBottom: '15px', fontSize: '1rem' }}>Sản phẩm hiện có ({products.length})</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {products.map(product => (
-              <div key={product.id} className="glass-morphism product-admin-item">
-                <img src={product.image} alt={product.name} />
-                <div className="item-details">
-                  <h4>{product.name}</h4>
-                  <p>{product.price}</p>
-                  <div className="actions">
-                    <a href={product.link} target="_blank" rel="noreferrer"><ExternalLink size={18} /></a>
-                    <button onClick={() => handleDelete(product.id)} className="delete-btn">
-                      <Trash2 size={18} />
-                    </button>
+              <div key={product.id} style={{ background: '#fff', padding: '12px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '15px', border: '1px solid #eee' }}>
+                <img src={product.image} alt={product.name} style={{ width: '50px', height: '50px', borderRadius: '6px', objectFit: 'cover' }} />
+                <div style={{ flex: 1 }}>
+                  <h4 style={{ fontSize: '0.85rem', marginBottom: '2px' }}>{product.name}</h4>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <span style={{ color: 'var(--primary)', fontWeight: '700', fontSize: '0.8rem' }}>{product.price}</span>
+                    <span style={{ fontSize: '0.7rem', color: '#999', display: 'flex', alignItems: 'center' }}><Tag size={10} style={{marginRight: '3px'}} />{product.code || 'N/A'}</span>
                   </div>
+                </div>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  <a href={product.link} target="_blank" rel="noreferrer" style={{ color: '#ccc' }}><ExternalLink size={18} /></a>
+                  <button onClick={() => handleDelete(product.id)} style={{ background: 'none', border: 'none', color: '#ff4d4d', cursor: 'pointer', padding: 0 }}>
+                    <Trash2 size={18} />
+                  </button>
                 </div>
               </div>
             ))}
           </div>
-        </section>
+        </div>
       </div>
-
-      <style jsx>{`
-        .admin-dashboard {
-          min-height: 100vh;
-          background: #000;
-          color: white;
-          padding: 20px;
-          overflow-y: auto;
-        }
-        .admin-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 30px;
-        }
-        .logout-btn {
-          background: none;
-          border: none;
-          color: #ff4d4d;
-          cursor: pointer;
-        }
-        .admin-content {
-          display: flex;
-          flex-direction: column;
-          gap: 30px;
-          max-width: 600px;
-          margin: 0 auto;
-        }
-        .admin-card {
-          padding: 20px;
-        }
-        .add-form {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-        .admin-input {
-          width: 100%;
-          padding: 12px;
-          background: rgba(255,255,255,0.05);
-          border: 1px solid var(--glass-border);
-          border-radius: 8px;
-          color: white;
-        }
-        .product-grid {
-          display: flex;
-          flex-direction: column;
-          gap: 15px;
-          margin-top: 15px;
-        }
-        .product-admin-item {
-          display: flex;
-          padding: 12px;
-          gap: 15px;
-          align-items: center;
-        }
-        .product-admin-item img {
-          width: 60px;
-          height: 60px;
-          border-radius: 8px;
-          object-fit: cover;
-        }
-        .item-details {
-          flex: 1;
-        }
-        .item-details h4 {
-          font-size: 0.9rem;
-          margin-bottom: 4px;
-        }
-        .item-details p {
-          color: var(--primary);
-          font-weight: bold;
-          font-size: 0.85rem;
-        }
-        .actions {
-          display: flex;
-          gap: 15px;
-          margin-top: 8px;
-        }
-        .actions a { color: #aaa; }
-        .delete-btn {
-          background: none;
-          border: none;
-          color: #ff4d4d;
-          cursor: pointer;
-          padding: 0;
-        }
-      `}</style>
     </div>
   );
 };

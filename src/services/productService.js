@@ -3,30 +3,6 @@ import { db } from "../firebase";
 
 const COLLECTION_NAME = "products";
 
-const MOCK_DATA = [
-  {
-    id: "1",
-    name: "Áo thun Shopee Local Brand",
-    price: "150.000đ",
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&q=80&w=1000",
-    link: "https://shopee.vn"
-  },
-  {
-    id: "2",
-    name: "Tai nghe Bluetooth không dây",
-    price: "299.000đ",
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=1000",
-    link: "https://shopee.vn"
-  },
-  {
-    id: "3",
-    name: "Bình giữ nhiệt 500ml",
-    price: "85.000đ",
-    image: "https://images.unsplash.com/photo-1602143399827-bd95967c7967?auto=format&fit=crop&q=80&w=1000",
-    link: "https://shopee.vn"
-  }
-];
-
 export const getProducts = async () => {
   try {
     console.log("Fetching products...");
@@ -39,8 +15,8 @@ export const getProducts = async () => {
     const querySnapshot = await Promise.race([getDocs(q), timeoutPromise]);
     
     if (querySnapshot.docs.length === 0) {
-      console.log("No products found in Firestore, using mock fallback.");
-      return MOCK_DATA;
+      console.log("No products found in Firestore.");
+      return [];
     }
     
     return querySnapshot.docs.map(doc => ({
@@ -48,8 +24,8 @@ export const getProducts = async () => {
       ...doc.data()
     }));
   } catch (error) {
-    console.error("Error fetching products, using fallback:", error);
-    return MOCK_DATA;
+    console.error("Error fetching products:", error);
+    return [];
   }
 };
 

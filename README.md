@@ -1,37 +1,38 @@
-# TikTok-Style Shopee Affiliate Web App 🚀
+# Shopee Affiliate Bio Link 🔗
 
-Một ứng dụng web di động hiện đại, mô phỏng trải nghiệm người dùng của TikTok để tối ưu hóa tỷ lệ chuyển đổi cho các chiến dịch Shopee Affiliate.
+Một giải pháp đơn giản, chuyên nghiệp để tổng hợp và quản lý các link tiếp thị liên kết (Affiliate) Shopee, tối ưu hoàn toàn cho Bio của TikTok và Instagram.
 
-## 🎯 Bài toán giải quyết
+## 🎯 Chức năng chính
 
-Trong thị trường Affiliate hiện nay, người dùng thường cảm thấy nhàm chán với các danh sách sản phẩm tĩnh truyền thống. Dự án này giải quyết các vấn đề sau:
-- **Tăng tính tương tác**: Thay thế việc lướt danh sách bằng trải nghiệm vuốt (swipe) gây nghiện như TikTok.
-- **Tập trung tối đa**: Mỗi lần chỉ hiển thị duy nhất 1 sản phẩm toàn màn hình, giúp loại bỏ sự xao nhãng.
-- **Tối ưu di động**: Giao diện được thiết kế mobile-first 100%, phù hợp với hành vi mua sắm trên điện thoại của người dùng hiện nay.
-- **Rút ngắn phễu mua hàng**: Nút "Mua ngay" nổi bật giúp chuyển đổi trực tiếp sang Shopee chỉ với một chạm.
+Dự án này tập trung vào sự đơn giản và hiệu quả:
+- **Trang Bio Link**: Hiển thị danh sách sản phẩm trực quan với hình ảnh, giá tiền và mã sản phẩm.
+- **Điều hướng nhanh**: Click trực tiếp vào sản phẩm sẽ tự động mở trang Shopee tương ứng.
+- **Trang Quản Trị (Admin)**: Quản lý (thêm/xóa) link sản phẩm dễ dàng thông qua bảng điều khiển bảo mật.
 
-## ✨ Điểm nổi bật (Core Features)
+## ✨ Điểm nổi bật
 
-- **🎬 Trải nghiệm Fullscreen (100vh)**: Tối ưu hóa không gian hiển thị hình ảnh/video sản phẩm chất lượng cao.
-- **🔄 Infinite Scroll (Snap Scrolling)**: Hiệu ứng cuộn dọc mượt mà, tự động căn chỉnh vị trí như ứng dụng TikTok thực thụ.
-- **💎 Thiết kế Glassmorphism**: Giao diện Overlay hiện đại với hiệu ứng kính mờ, tạo cảm giác cao cấp và chuyên nghiệp.
-- **🔥 Shopee Branding**: Sử dụng tone màu cam chủ đạo (`#ee4d2d`) giúp tạo sự tin tưởng và nhất quán với thương hiệu Shopee.
-- **☁️ Firebase Integration**: Kết nối thời gian thực với Firestore để quản lý danh sách sản phẩm linh hoạt.
-- **🛡️ Cơ chế Fallback thông minh**: Tự động hiển thị dữ liệu mẫu nếu kết nối Firebase gặp sự cố, đảm bảo website không bao giờ bị "trống".
-- **⚡ Tối ưu hiệu năng**: Sử dụng Vite + React giúp tốc độ tải trang cực nhanh và mượt mà.
+- **⚡ Siêu nhanh**: Khởi tạo bằng Vite + React cho tốc độ tải trang gần như tức thì.
+- **📱 Giao diện Mobile-First**: Được thiết kế để hiển thị hoàn hảo trên các trình duyệt mobile tích hợp của TikTok/Instagram.
+- **🛡️ Quản lý tập trung**: Không cần sửa đổi mã nguồn (code) mỗi khi muốn thêm link mới, mọi thứ đều được quản lý qua Admin Dashboard.
+- **☁️ Dữ liệu Cloud**: Sử dụng Firebase Firestore để lưu trữ link sản phẩm mọi lúc mọi nơi.
+- **🛠️ Cơ chế Fallback**: Luôn có dữ liệu dự phòng để đảm bảo Bio của bạn không bao giờ bị lỗi hiển thị.
 
-## 🛠 Tech Stack
+## 🛠 Hướng dẫn sử dụng
 
-- **Frontend**: React.js, Vite
-- **Styling**: Vanilla CSS, Framer Motion (Animations), Lucide React (Icons)
-- **Backend**: Firebase (Firestore)
-- **Hosting**: Vercel
+### 1. Cho người dùng (Trang chủ)
+Chỉ cần truy cập trang chủ để xem danh sách các deal hot nhất. Mỗi sản phẩm kèm theo mã (`Code`) giúp bạn dễ dàng tìm kiếm hoặc đối chiếu.
 
-## 🚀 Hướng dẫn nhanh
+### 2. Cho người quản lý (Admin)
+- **Truy cập**: Thêm `/admin` vào sau địa chỉ web của bạn.
+- **Mật khẩu**: `123` (Có thể thay đổi trong cấu hình).
+- **Tính năng**: 
+  - Thêm sản phẩm: Nhập tên, mã, giá, link ảnh và link Shopee.
+  - Xóa sản phẩm: Gỡ bỏ các link đã hết hạn hoặc không còn kinh doanh.
 
-1. **Cài đặt**: `npm install`
-2. **Chạy local**: `npm run dev`
-3. **Cấu hình**: Cập nhật thông số Firebase trong `src/firebase.js`.
+## 🚀 Cài đặt nhanh
+
+1. `npm install`
+2. `npm run dev` (Local: http://localhost:5173)
 
 ---
-*Dự án hướng tới việc mang lại trải nghiệm mua sắm giải trí cho người dùng cuối và lợi nhuận tối ưu cho người làm Affiliate.*
+*Giải pháp giúp bạn tối ưu hóa thu nhập từ tiếp thị liên kết một cách chuyên nghiệp nhất.*
