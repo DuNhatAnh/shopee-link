@@ -3,8 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { getProducts } from './services/productService';
 import ProductList from './components/ProductList';
 import AdminDashboard from './components/AdminDashboard';
+import { Search, X } from 'lucide-react';
 
 const MainFeed = ({ products, loading }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+
   if (loading) {
     return (
       <div className="app-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -27,6 +30,13 @@ const MainFeed = ({ products, loading }) => {
     );
   }
 
+  const filteredProducts = products.filter(product => {
+    const searchLower = searchTerm.toLowerCase();
+    const matchesName = product.name?.toLowerCase().includes(searchLower);
+    const matchesCode = product.code?.toLowerCase().includes(searchLower);
+    return matchesName || matchesCode;
+  });
+
   return (
     <div className="app-container">
       <header className="header">
@@ -34,9 +44,43 @@ const MainFeed = ({ products, loading }) => {
         <p style={{ color: '#666', fontSize: '0.9rem' }}>Săn deal đỉnh cùng mình nhé! 👇</p>
       </header>
       
-      <ProductList products={products} />
+      <div className="search-container">
+        <div className="search-wrapper">
+          <div className="search-icon">
+            <Search size={18} />
+          </div>
+          <input 
+            type="text" 
+            className="search-input"
+            placeholder="Tìm theo tên hoặc mã SP..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          {searchTerm && (
+            <button className="clear-search" onClick={() => setSearchTerm('')}>
+              <X size={12} />
+            </button>
+          )}
+        </div>
+      </div>
+      
+      {filteredProducts.length > 0 ? (
+        <ProductList products={filteredProducts} />
+      ) : (
+        <div className="empty-state">
+          <div className="empty-state-icon">
+            <Search size={48} strokeWidth={1} />
+          </div>
+          <p className="empty-state-text">Không tìm thấy sản phẩm nào phù hợp.</p>
+          {searchTerm && (
+            <button className="reset-search-btn" onClick={() => setSearchTerm('')}>
+              Xem tất cả sản phẩm
+            </button>
+          )}
+        </div>
+      )}
 
-      {products.length === 0 && (
+      {products.length === 0 && !searchTerm && (
         <div style={{ textAlign: 'center', padding: '40px' }}>
           <p>Chưa có sản phẩm nào được cập nhật.</p>
         </div>
